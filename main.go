@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -46,13 +45,11 @@ func mail(msg message) (string, error) {
 	config := mailer.Config{
 		Host:       os.Getenv("HOST"),
 		Username:   os.Getenv("EMAIL"),
-		Password:   os.Getenv("PASSWORD"),
+		Password:   os.Getenv("PWD"),
 		FromAddr:   os.Getenv("EMAIL"),
 		Port:       port,
 		UseCommand: false,
 	}
-
-	fmt.Println(os.Getenv("EMAIL"), os.Getenv("PASSWORD"))
 
 	sender := mailer.New(config)
 
