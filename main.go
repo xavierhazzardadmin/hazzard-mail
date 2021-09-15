@@ -91,7 +91,7 @@ func sendMail(msg message) (string, error) {
 	m.SetHeader("Subject", ("Message from " + msg.Sender + "."))
 	m.SetBody("text/html", "<p>Message: "+msg.Message+"</p>"+"<h4>From the address: "+msg.Email+"</h4>")
 
-	d := gomail.NewDialer(os.Getenv("HOST"), port, os.Getenv("EMAIL"), os.Getenv("PWD"))
+	d := gomail.NewDialer(os.Getenv("HOST"), port, "jediknightxch@gmail.com", os.Getenv("PWD"))
 
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
