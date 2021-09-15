@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kataras/go-mailer"
+	"gopkg.in/gomail.v2"
 )
 
 type message struct {
@@ -26,7 +26,49 @@ type response struct {
 	TimeTaken    time.Duration
 }
 
-func mail(msg message) (string, error) {
+// func mail(msg message) (string, error) {
+
+// 	if msg.Message == "" {
+// 		return "Error whilst sending email, message was not provided", errors.New("External Client Error")
+// 	} else if msg.Sender == "" {
+// 		return "Error whilst sending email, sender was not provided", errors.New("External Client Error")
+// 	} else if msg.Email == "" {
+// 		return "Error whilst sending email, email was not provided", errors.New("External Client Error")
+// 	}
+
+// 	port, err := strconv.Atoi(os.Getenv("GPORT"))
+
+// 	if err != nil {
+// 		panic(err)
+// 	}
+
+// 	config := mailer.Config{
+// 		Host:       os.Getenv("HOST"),
+// 		Username:   os.Getenv("EMAIL"),
+// 		Password:   os.Getenv("PWD"),
+// 		FromAddr:   os.Getenv("EMAIL"),
+// 		Port:       port,
+// 		UseCommand: false,
+// 	}
+
+// 	sender := mailer.New(config)
+
+// 	subject := "Message from " + msg.Sender
+
+// 	content := "<p>Message: " + msg.Message + "</p>" + "<h4> From the address: " + msg.Email + "</h4>"
+
+// 	to := []string{os.Getenv("RECIPIENT")}
+
+// 	err = sender.Send(subject, content, to...)
+
+// 	if err != nil {
+// 		return "Error whilst sending email", err
+// 	}
+
+// 	return "Successfully sent email", nil
+// }
+
+func sendMail(msg message) (string, error) {
 
 	if msg.Message == "" {
 		return "Error whilst sending email, message was not provided", errors.New("External Client Error")
@@ -42,32 +84,21 @@ func mail(msg message) (string, error) {
 		panic(err)
 	}
 
-	config := mailer.Config{
-		Host:       os.Getenv("HOST"),
-		Username:   os.Getenv("EMAIL"),
-		Password:   os.Getenv("PWD"),
-		FromAddr:   os.Getenv("EMAIL"),
-		Port:       port,
-		UseCommand: false,
-	}
+	m := gomail.NewMessage()
 
-	sender := mailer.New(config)
+	m.SetHeader("From", os.Getenv("EMAIL"))
+	m.SetHeader("To", os.Getenv("RECIPIENT"))
+	m.SetHeader("Subject", ("Message from " + msg.Sender + "."))
+	m.SetBody("text/html", "<p>Message: "+msg.Message+"</p>"+"<h4>From the address: "+msg.Email+"</h4>")
 
-	subject := "Message from " + msg.Sender
+	d := gomail.NewDialer(os.Getenv("HOST"), port, os.Getenv("EMAIL"), os.Getenv("PWD"))
 
-	content := "<p>Message: " + msg.Message + "</p>" + "<h4> From the address: " + msg.Email + "</h4>"
-
-	to := []string{os.Getenv("RECIPIENT")}
-
-	err = sender.Send(subject, content, to...)
-
-	if err != nil {
-		return "Error whilst sending email", err
+	if err := d.DialAndSend(); err != nil {
+		panic(err)
 	}
 
 	return "Successfully sent email", nil
 }
-
 func mailHandle(c *gin.Context) {
 	start := time.Now()
 
@@ -80,7 +111,7 @@ func mailHandle(c *gin.Context) {
 		c.AbortWithError(400, err)
 	}
 
-	sendMessage, err := mail(msg)
+	sendMessage, err := sendMail(msg)
 
 	if err != nil {
 
