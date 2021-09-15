@@ -12,9 +12,9 @@ import (
 )
 
 type message struct {
-	Sender  string
-	Message string
-	Email   string
+	Sender  string `json:"sender"`
+	Message string `json:"message"`
+	Email   string `json:"email"`
 }
 
 type response struct {
@@ -77,6 +77,7 @@ func mailHandle(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"error": "Failed to receive request parameters. Please try again.",
 		})
+		c.AbortWithError(400, err)
 	}
 
 	sendMessage, err := mail(msg)
@@ -94,6 +95,8 @@ func mailHandle(c *gin.Context) {
 		jData, _ := json.Marshal(res)
 
 		c.JSON(400, jData)
+
+		c.AbortWithError(400, err)
 	}
 
 	elapsed := time.Since(start)
@@ -132,7 +135,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		}
 
 		c.Next()
-
 	}
 }
 
