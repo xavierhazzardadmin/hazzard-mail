@@ -52,7 +52,7 @@ func mail(msg message) (string, error) {
 		UseCommand: false,
 	}
 
-	fmt.Println(os.Getenv("EMAIL"))
+	fmt.Println(os.Getenv("EMAIL"), os.Getenv("PASSWORD"))
 
 	sender := mailer.New(config)
 
