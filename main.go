@@ -153,6 +153,6 @@ func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
-	// r.POST("/mail", mailHandle)
+	r.POST("/mail", mailHandle)
 	r.Run()
 }
