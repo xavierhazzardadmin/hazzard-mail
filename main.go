@@ -93,7 +93,7 @@ func sendMail(msg message) (string, error) {
 
 	d := gomail.NewDialer(os.Getenv("HOST"), port, os.Getenv("EMAIL"), os.Getenv("PWD"))
 
-	if err := d.DialAndSend(); err != nil {
+	if err := d.DialAndSend(m); err != nil {
 		panic(err)
 	}
 
