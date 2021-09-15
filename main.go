@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"strconv"
 	"time"
@@ -50,6 +51,8 @@ func mail(msg message) (string, error) {
 		Port:       port,
 		UseCommand: false,
 	}
+
+	fmt.Println(os.Getenv("EMAIL"))
 
 	sender := mailer.New(config)
 
