@@ -1,10 +1,10 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -78,11 +78,11 @@ func sendMail(msg message) (string, error) {
 		return "Error whilst sending email, email was not provided", errors.New("External Client Error")
 	}
 
-	port, err := strconv.Atoi(os.Getenv("GPORT"))
+	// port, err := strconv.Atoi(os.Getenv("GPORT"))
 
-	if err != nil {
-		panic(err)
-	}
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	m := gomail.NewMessage()
 
@@ -91,7 +91,8 @@ func sendMail(msg message) (string, error) {
 	m.SetHeader("Subject", ("Message from " + msg.Sender + "."))
 	m.SetBody("text/html", "<p>Message: "+msg.Message+"</p>"+"<h4>From the address: "+msg.Email+"</h4>")
 
-	d := gomail.NewDialer(os.Getenv("HOST"), port, "jediknightxch@gmail.com", os.Getenv("PWD"))
+	d := gomail.NewDialer(os.Getenv("HOST"), 587, os.Getenv("EMAIL"), os.Getenv("PWD"))
+	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
 		panic(err)
