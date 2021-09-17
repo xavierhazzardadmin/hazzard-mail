@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -78,11 +79,14 @@ func sendMail(msg message) (string, error) {
 		return "Error whilst sending email, email was not provided", errors.New("External Client Error")
 	}
 
-	// port, err := strconv.Atoi(os.Getenv("GPORT"))
+	PORT, err := strconv.Atoi(os.Getenv("GPORT"))
 
-	// if err != nil {
-	// 	panic(err)
-	// }
+	HOST := os.Getenv("HOST")
+	EMAIL := os.Getenv("EMAIL")
+	PWD := os.Getenv("PWD")
+	if err != nil {
+		panic(err)
+	}
 
 	m := gomail.NewMessage()
 
@@ -91,7 +95,7 @@ func sendMail(msg message) (string, error) {
 	m.SetHeader("Subject", ("Message from " + msg.Sender + "."))
 	m.SetBody("text/html", "<p>Message: "+msg.Message+"</p>"+"<h4>From the address: "+msg.Email+"</h4>")
 
-	d := gomail.NewDialer(os.Getenv("HOST"), 587, os.Getenv("EMAIL"), os.Getenv("PWD"))
+	d := gomail.NewDialer(HOST, PORT, EMAIL, PWD)
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
