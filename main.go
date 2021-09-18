@@ -27,48 +27,6 @@ type response struct {
 	TimeTaken    time.Duration
 }
 
-// func mail(msg message) (string, error) {
-
-// 	if msg.Message == "" {
-// 		return "Error whilst sending email, message was not provided", errors.New("External Client Error")
-// 	} else if msg.Sender == "" {
-// 		return "Error whilst sending email, sender was not provided", errors.New("External Client Error")
-// 	} else if msg.Email == "" {
-// 		return "Error whilst sending email, email was not provided", errors.New("External Client Error")
-// 	}
-
-// 	port, err := strconv.Atoi(os.Getenv("GPORT"))
-
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	config := mailer.Config{
-// 		Host:       os.Getenv("HOST"),
-// 		Username:   os.Getenv("EMAIL"),
-// 		Password:   os.Getenv("PWD"),
-// 		FromAddr:   os.Getenv("EMAIL"),
-// 		Port:       port,
-// 		UseCommand: false,
-// 	}
-
-// 	sender := mailer.New(config)
-
-// 	subject := "Message from " + msg.Sender
-
-// 	content := "<p>Message: " + msg.Message + "</p>" + "<h4> From the address: " + msg.Email + "</h4>"
-
-// 	to := []string{os.Getenv("RECIPIENT")}
-
-// 	err = sender.Send(subject, content, to...)
-
-// 	if err != nil {
-// 		return "Error whilst sending email", err
-// 	}
-
-// 	return "Successfully sent email", nil
-// }
-
 func sendMail(msg message) (string, error) {
 
 	if msg.Message == "" {
@@ -175,19 +133,6 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
-
-// func main() {
-// 	// port := ":" + os.Getenv("PORT")
-
-// 	mux := http.NewServeMux()
-
-// 	mux.HandleFunc("/mail", mailHandle)
-
-// 	err := http.ListenAndServe(os.Getenv(os.Getenv("PORT")), mux)
-// 	if err != nil {
-// 		log.Fatalf("Error whilst handling request: %v", err)
-// 	}
-// }
 
 func main() {
 	r := gin.Default()
