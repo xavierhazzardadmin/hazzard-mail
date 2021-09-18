@@ -59,6 +59,7 @@ func sendMail(msg message) (string, error) {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
+		fmt.Println(PWD, EMAIL)
 		panic(err)
 	}
 
