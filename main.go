@@ -84,14 +84,16 @@ func sendMail(msg message) (string, error) {
 	HOST := os.Getenv("HOST")
 	EMAIL := os.Getenv("EMAIL")
 	PWD := os.Getenv("PWD")
+	RECIPIENT := os.Getenv("RECIPIENT")
+
 	if err != nil {
 		panic(err)
 	}
 
 	m := gomail.NewMessage()
 
-	m.SetHeader("From", os.Getenv("EMAIL"))
-	m.SetHeader("To", os.Getenv("RECIPIENT"))
+	m.SetHeader("From", EMAIL)
+	m.SetHeader("To", RECIPIENT)
 	m.SetHeader("Subject", ("Message from " + msg.Sender + "."))
 	m.SetBody("text/html", "<p>Message: "+msg.Message+"</p>"+"<h4>From the address: "+msg.Email+"</h4>")
 
