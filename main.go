@@ -39,7 +39,7 @@ func sendMail(msg message) (string, error) {
 	const PORT int = 587
 	HOST := os.Getenv("HOST")
 	EMAIL := os.Getenv("EMAIL")
-	PWD := os.Getenv("PWD")
+	PWD := os.Getenv("PASSWORD")
 	RECIPIENT := os.Getenv("RECIPIENT")
 
 	// if err != nil {
