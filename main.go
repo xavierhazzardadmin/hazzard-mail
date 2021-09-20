@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"net/http"
 	"os"
 	"time"
 
@@ -62,7 +63,7 @@ func sendMail(msg message) (string, error) {
 
 	return "Successfully sent email", nil
 }
-func mailHandle(c *gin.Context) {
+func mailHandler(c *gin.Context) {
 	start := time.Now()
 
 	var msg message
@@ -138,10 +139,15 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
+func defaultHandler(c *gin.Context) {
+	c.Redirect(http.StatusMovedPermanently, "https://www.hazzard.uk")
+}
+
 func main() {
 	r := gin.Default()
 	r.Use(CORSMiddleware())
 
-	r.POST("/mail", mailHandle)
+	r.POST("/mail", mailHandler)
+	r.GET("/", defaultHandler)
 	r.Run()
 }
