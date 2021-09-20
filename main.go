@@ -2,10 +2,9 @@ package main
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,16 +36,15 @@ func sendMail(msg message) (string, error) {
 		return "Error whilst sending email, email was not provided", errors.New("External Client Error")
 	}
 
-	PORT, err := strconv.Atoi(os.Getenv("GPORT"))
-
+	const PORT int = 587
 	HOST := os.Getenv("HOST")
 	EMAIL := os.Getenv("EMAIL")
 	PWD := os.Getenv("PWD")
 	RECIPIENT := os.Getenv("RECIPIENT")
 
-	if err != nil {
-		panic(err)
-	}
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	m := gomail.NewMessage()
 
@@ -59,7 +57,7 @@ func sendMail(msg message) (string, error) {
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 
 	if err := d.DialAndSend(m); err != nil {
-		panic(err)
+		return "Failed to authenticate with username and password: " + EMAIL + " : " + PWD, err
 	}
 
 	return "Successfully sent email", nil
@@ -88,11 +86,17 @@ func mailHandle(c *gin.Context) {
 			EmailAddress: msg.Email,
 		}
 
-		jData, _ := json.Marshal(res)
+		// jData, _ := json.Marshal(res)
 
-		c.JSON(400, jData)
+		c.JSON(400, gin.H{
+			"error": res,
+		})
 
 		c.AbortWithError(400, err)
+
+		fmt.Println(sendMessage)
+
+		panic(err)
 	}
 
 	elapsed := time.Since(start)
@@ -106,15 +110,15 @@ func mailHandle(c *gin.Context) {
 		TimeTaken:    time.Duration(elapsed.Seconds()),
 	}
 
-	jRes, err := json.Marshal(res)
+	// jRes, err := json.Marshal(res)
 
-	if err != nil {
-		c.JSON(400, gin.H{
-			"error": err,
-		})
-	}
+	// if err != nil {
+	// 	c.JSON(400, gin.H{
+	// 		"error": err,
+	// 	})
+	// }
 
-	c.JSON(200, jRes)
+	c.JSON(200, res)
 
 }
 
@@ -139,5 +143,5 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	r.POST("/mail", mailHandle)
-	r.Run()
+	r.Run(":8080")
 }
