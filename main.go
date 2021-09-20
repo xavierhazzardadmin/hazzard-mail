@@ -148,6 +148,7 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	r.POST("/mail", mailHandler)
+	r.GET("/mail", defaultHandler)
 	r.GET("/", defaultHandler)
 	r.Run()
 }
