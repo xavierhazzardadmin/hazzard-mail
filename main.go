@@ -143,5 +143,5 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	r.POST("/mail", mailHandle)
-	r.Run(":8080")
+	r.Run()
 }
