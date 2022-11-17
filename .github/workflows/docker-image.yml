@@ -2,9 +2,9 @@ name: Build and Push to Hub
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "develop" ]
+    branches: [ "main" ]
 env:
     DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
     DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
